@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 ID = '12345678-1234-1234-1234-123456789abc'
 NEXT = '87654321-1234-1234-1234-123456789abc'
-HTML = '''<!doctype html><style>
+HTML = '''<!doctype html><meta charset="utf-8"><style>
 body{margin:0;background:#f7f7f8;font:14px system-ui;color:#242424}
 main{max-width:960px;margin:60px auto;padding:24px}
 .card{border:1px solid #ddd;border-radius:18px;padding:16px;background:white}
@@ -30,8 +30,9 @@ def run():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(viewport={'width': 1100, 'height': 600})
-        page.route('http://127.0.0.1:19091/**', lambda r: r.fulfill(content_type='text/html', body=HTML))
+        page.route('http://127.0.0.1:19091/**', lambda r: r.fulfill(content_type='text/html; charset=utf-8', body=HTML))
         page.goto('http://127.0.0.1:19091/c/'+ID)
+        assert page.locator('[contenteditable]').inner_text() == 'Ask Antigravity…', 'Fixture must decode UTF-8 before injection'
         page.evaluate(source)
         page.evaluate('(p)=>window.__agyMetrics.update(p)', PAYLOAD)
         label = page.locator('#agy-metrics-widget').get_by_role('button')
