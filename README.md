@@ -1,82 +1,97 @@
-# AGY Token Tips
+# tokens-tips
 
-[English](README.en.md) · [下载安装包](https://github.com/arShen6/agy-metrics/releases/latest) · [反馈问题](https://github.com/arShen6/agy-metrics/issues)
+**See token usage, context fill, generation speed and first-token wait — right inside Antigravity Desktop.**
 
-在 **Antigravity Desktop 输入框底部**显示 token 速度、首字等待、上下文用量与输出数量。悬停查看本次调用和会话累计统计。
+**在 Antigravity 输入框旁，查看 token 用量、上下文占用、生成速度和首字等待时间。**
 
-底部保持英文缩写；详情提供中文、英文两个版本。安装后后台运行，登录自动启动，终端可以关闭。
+[**Download · English**](https://github.com/arShen6/agy-metrics/releases/download/v0.2.3/tokens-tips-0.2.3-macos-arm64-en.zip) · [**下载 · 中文版**](https://github.com/arShen6/agy-metrics/releases/download/v0.2.3/tokens-tips-0.2.3-macos-arm64-zh-CN.zip)
 
-![AGY Token Tips 实机效果](assets/agy-preview.png)
+**Download → unzip → double-click `install.command`.** No commands to type, no separate runtime to install. Runs in the background after installation.
 
-*用户提供的早期版本实机截图。当前版本还会在详情中明确列出「底部速度」和「端到端速度」，避免把两种计时口径混淆。截图数字仅为示例。*
+**下载 → 解压 → 双击安装。** 无需手输命令、无需另装运行环境，安装后后台自动运行。
 
-## 下载与双击安装
+For **macOS Apple Silicon (M series)** · Antigravity **2.32.1** reference version · English / 中文 tooltips
 
-当前独立安装包面向 **macOS Apple Silicon（M 系列）**，内置 Node.js，无需另装 Node、npm 或 Python。参考兼容版本：**Antigravity 2.32.1**。
+![tokens-tips showing token speed, wait time, context usage and detailed statistics in Antigravity](assets/agy-preview.png)
 
-1. 在 [Releases](https://github.com/arShen6/agy-metrics/releases/latest) 下载 `agy-token-tips-0.2.2-macos-arm64-zh-CN.zip`（中文）或 `…-en.zip`（English）。不要选择 GitHub 自动生成的 `Source code` 作为独立安装包。
-2. 完整解压，在解压目录双击 **`install.command`**。系统可能要求确认打开；本项目尚未进行 Apple 签名或公证。
-3. 看到后台服务注册成功后关闭终端，在 Antigravity 打开已有对话。新对话完成一次模型调用后开始有数据。
+*Preview from an earlier build. Current details explicitly distinguish streaming and end-to-end speed. / 早期版本实机示例；当前详情已明确区分流式速度与端到端速度。*
 
-安装不会关闭你的任务或修改 Antigravity 安装包。M 系列以外的机器可按下文从源码运行；本版没有为 Intel Mac、Windows 或 Linux 提供已验证的双击安装包。
+## What you see
 
-**切换语言：** 双击 `install-zh.command` 或 `install-en.command`，更新同一个后台服务。底部格式始终为 `agy · tok/s · TTFT · Ctx · Out`。
+A compact bar beside your composer. Hover for the details — no separate dashboard to open.
 
-## 数字是什么意思
+输入框旁直接看关键指标，鼠标悬停展开详情，无需打开其他面板。
 
-| 指标 | 口径 |
-| --- | --- |
-| tok/s | 最近一次模型调用的输出 token ÷ 流式输出时长，不含首字等待 |
-| TTFT | 本地元数据报告的等待时长 |
-| Hold | 返回可能被缓冲时，显示等待时长，并将速度切换为含等待的端到端速度 |
-| Ctx | 最近请求的未缓存输入＋缓存读取 / 元数据提供的上下文上限 |
-| Out | 最近一次调用的输出 token 数 |
-| 悬停详情 | 同口径底部速度、另列端到端速度、等待/输出耗时、思考与响应/工具输出、会话累计输入输出及缓存命中率 |
+| Metric | What it shows | 中文说明 |
+| --- | --- | --- |
+| **Ctx** | Context tokens used / limit, plus percentage | 上下文已用 / 上限与占比 |
+| **tok/s** | Output speed of the latest model call | 最近一次模型调用的输出速度 |
+| **TTFT / Hold** | First-token wait / wait for buffered output | 首字等待 / 缓冲返回等待时间 |
+| **Out** | Output tokens in the latest call | 本次输出 token 数 |
+| **Hover details** | Reasoning and response/tool output, session totals | 思考与响应/工具输出、会话累计用量 |
+| **Cache** | Cached input and cache hit rate | 缓存读取量与命中率 |
 
-比如输出 1,971 token，等待 9.9 秒、输出 20.0 秒：底部流式速度约 **98.6 tok/s**，含等待的端到端速度约 **65.9 tok/s**。两者定义不同，详情会分别标注。
+Context usage turns **yellow at 75%** and **red at 90%**. The strip stays in English; choose Chinese or English for the explanations. Data may update after a model call completes.
 
-上下文达到 75% 为黄色、90% 为红色；这是用量提醒，不是报错。没有可靠数值时显示 `—`，不会用文本长度编造 token 数。数据可能在一次调用结束后才更新，不能当作账户账单或剩余额度。
+上下文占用达到 **75% 变黄、90% 变红**。底部统一英文缩写，详细解释可选中英文；数据可能在单次调用完成后更新。
 
-## 工作方式与隐私
+## Install in 3 steps
 
-这是独立的本地界面补丁，**不是 VSIX 扩展**。它只读本地 `gen_metadata` 用量数据，通过本机调试连接在 Antigravity 界面内添加提示条。没有 npm 运行依赖，不上传聊天或指标，不需要 API Key。
+1. **Download your language above.** Use the installer ZIP, not GitHub's automatic “Source code” archive. / 下载上方对应语言的安装包。
+2. **Extract the whole ZIP, then double-click `install.command`.** / 完整解压，双击安装文件。
+3. **Open an Antigravity conversation.** Once the service is registered, close Terminal. New conversations show data after their first model call. / 服务注册成功后可关闭终端，新对话完成首次调用后开始显示。
 
-macOS 安装位置保留为 `~/Library/Application Support/AGY Metrics`，使用当前用户的 LaunchAgent；安装到独立副本后可移动或删除原解压目录。沿用旧路径与服务名是为了兼容已有安装。
+The runtime is included. Starts at login and reconnects when Antigravity reopens. Installation leaves active tasks running.
 
-已核对的 Antigravity 2.32.1 提供动态本地调试端口。其他版本可能改变界面属性或数据库格式，届时需要适配。当前只发布 AGY 功能。
+已内置运行环境，登录后自动启动，Antigravity 重开后自动连接；安装不会关闭正在运行的任务。
 
-## 检查、升级与卸载
+| Action | Double-click | 中文 |
+| --- | --- | --- |
+| Chinese details | `install-zh.command` | 切换中文解释 |
+| English details | `install-en.command` | 切换英文解释 |
+| Check status | `status.command` | 检查运行状态 |
+| Uninstall | `uninstall.command` | 卸载后台服务 |
 
-- **检查：** 双击 `status.command`。`ready: true` 表示检查到了真实窗口中的提示组件，只有端口连通不算成功。
-- **升级：** 下载新版并重新运行安装器。安装器会等待旧服务完全退出后再注册新服务。
-- **卸载：** 双击 `uninstall.command`，停止服务并移除登录启动项。保留版本备份和日志，不删除 Antigravity 会话。
-- **日志：** `~/Library/Application Support/AGY Metrics/logs/`。
+macOS may ask you to confirm opening the installer; it is not Apple-signed or notarized. Standalone downloads currently target M-series Macs. / 首次打开可能需要系统确认；当前安装包适用于 M 系列 Mac，尚未进行 Apple 签名或公证。
 
-| 遇到的情况 | 处理 |
-| --- | --- |
-| 等待调用数据 | 完成一次模型调用，并稍候刷新 |
-| 没有提示条 | 运行 `status.command`，确认应用版本和本地调试连接 |
-| 数据库忙 | 自动重试，不需要删除数据库 |
-| 格式不支持 | 提交应用版本、系统版本和脱敏错误；不要上传会话数据库 |
+## Understand the numbers
 
-## 从源码运行
+**Streaming speed** excludes the initial wait. **End-to-end speed** includes it. Both are labeled separately in the tooltip, and the tooltip repeats the same speed shown in the bar. Potentially buffered output uses end-to-end speed and the `Hold` label.
 
-需要 **Node.js >=22.16**。macOS 启动器会查找已有 Node（含 Volta/NVM），不改变全局版本。
+**流式速度不含等待，端到端速度包含等待。** 详情分别标注，并重复展示底部相同口径的速度；可能被缓冲的返回使用端到端速度和 `Hold` 标记。
+
+Counts come from local usage metadata. Unknown values stay `—`; tokens are not guessed from text length. These are conversation metrics, not billing or remaining account quota.
+
+数字来自本地用量数据，未知项显示 `—`，不按文本长度猜测 token；这些是会话指标，不代表账单或账户剩余额度。
+
+<details>
+<summary>Technical details, troubleshooting and development / 技术说明与排查</summary>
+
+This is an unofficial local UI patch, not a VSIX extension. It reads local `gen_metadata` records and uses a loopback debugging connection to mount the strip. No API key or chat/metrics uploads. No application bundle modification.
+
+The installer keeps the existing `~/Library/Application Support/AGY Metrics` location and LaunchAgent identity for upgrade compatibility. It installs an independent copy, so the downloaded folder can be moved afterward. Uninstall removes login startup and the service; logs and backups remain, and Antigravity conversations are untouched.
+
+If metrics are missing, finish a model call and run `status.command`. `ready: true` means the widget was detected in an actual window. Logs are in `~/Library/Application Support/AGY Metrics/logs/`. Client updates may require adjustments to the private data format or UI hooks. Report your app/OS versions and redacted errors; do not upload conversation databases.
+
+本地只读用量数据，不上传聊天或指标。无显示时先完成一次调用，再运行状态检查；反馈时只附版本和脱敏错误，请勿上传会话数据库。
+
+Source development requires Node.js >=22.16:
 
 ```bash
-bash start.sh install                 # macOS 后台安装
-bash start.sh start --language en     # 临时运行，Ctrl+C 停止
-bash start.sh doctor                  # 只读诊断
+bash start.sh start --language en
+bash start.sh doctor
 npm test
-npm run demo                         # 模拟数据预览，不是实机验证
+npm run demo
 ```
 
-Windows/Linux 可手动启动 Antigravity 的本地调试端口，再运行 `node bin/agy-metrics.mjs start --port 9222`。这些平台有路径测试，但未完成实机验收。详细配置与协议见 [protocol.md](docs/protocol.md)。
+The demo uses simulated data. Windows/Linux have source-level path tests but no verified standalone installer or live UI support. More details: [protocol.md](docs/protocol.md).
 
-## 贡献与许可
+</details>
 
-欢迎通过 Issue / Pull Request 修复版本兼容性、改进翻译和安装体验。请先阅读 [贡献指南](CONTRIBUTING.md)。支持其他客户端的 PR 也欢迎讨论，但必须包含真实数据来源和实机验证，不能仅凭解析测试标记为支持。
+## Contribute
 
-功能灵感来自 [船板的 Antigravity 补丁](https://github.com/Anarcadia/chuanban-antigravity-theme-patch)。本项目独立实现数据读取、界面和启动器，未包含其主题、字体、汉化资源或代码。
+Issues and pull requests are welcome — compatibility fixes, translations and installation improvements. See [CONTRIBUTING.md](CONTRIBUTING.md). Proposals for other clients need verified data sources and live-client evidence.
 
-[MIT License](LICENSE)。非 Google 官方项目。安装包附带的 Node.js 使用其自身许可，见 `runtime/LICENSE`。
+欢迎提 Issue / PR，共同改进兼容性、翻译和安装体验；其他客户端的适配需提供真实数据来源与实机验证。
+
+Inspired by [chuanban-antigravity-theme-patch](https://github.com/Anarcadia/chuanban-antigravity-theme-patch). Independently implemented; no code or theme assets from that project are bundled. [MIT License](LICENSE). Unofficial, not affiliated with Google. Node.js retains its own license in `runtime/LICENSE`.

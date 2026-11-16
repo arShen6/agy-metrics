@@ -3,7 +3,7 @@ import {formatTooltip,formatRate} from '../src/messages.mjs';
 export function mountWidget(language='zh-CN',tooltipFormatter=formatTooltip,rateFormatter=formatRate) {
   // CDP's document-start hook may run before the root exists; the daemon retries.
   if (!document.documentElement) return;
-  const VERSION = `0.2.2/${language}`;
+  const VERSION = `0.2.3/${language}`;
   if (window.__agyMetrics?.version === VERSION) return;
   window.__agyMetrics?.dispose();
   const UUID = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i;

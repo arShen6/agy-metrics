@@ -1,14 +1,14 @@
 {
-  "name": "agy-token-tips",
-  "version": "0.2.2",
-  "description": "Bilingual token, speed and context tips inside Antigravity Desktop",
+  "name": "tokens-tips",
+  "version": "0.2.3",
+  "description": "See token usage, context fill and generation speed inside Antigravity. 查看 token 用量、上下文占用与生成速度。",
   "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=22.16.0"
   },
   "bin": {
-    "agy-token-tips": "bin/agy-metrics.mjs"
+    "tokens-tips": "bin/agy-metrics.mjs"
   },
   "scripts": {
     "start": "node bin/agy-metrics.mjs start",
@@ -27,6 +27,7 @@
     "start.sh",
     "start.cmd",
     "install.command",
+    "install-zh.command",
     "install-en.command",
     "uninstall.command",
     "status.command",

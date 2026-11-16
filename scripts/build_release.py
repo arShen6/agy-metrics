@@ -37,7 +37,7 @@ def main():
     dist.mkdir(exist_ok=True)
     sums = []
     for language in ['zh-CN', 'en']:
-        name = f"agy-token-tips-{metadata['version']}-macos-arm64-{language}"
+        name = f"tokens-tips-{metadata['version']}-macos-arm64-{language}"
         with tempfile.TemporaryDirectory(prefix='build-', dir=dist) as temp:
             folder = Path(temp) / name
             for relative in FILES:

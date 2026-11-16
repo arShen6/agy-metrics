@@ -9,7 +9,7 @@ for candidate in "${AGY_NODE_BIN:-}" "$AGY_ROOT/runtime/node" "$(command -v node
   if agy_supported_node "$candidate"; then AGY_NODE="$candidate"; break; fi
 done
 if [ -z "$AGY_NODE" ]; then
-  printf '%s\n' 'AGY Token Tips requires Node.js >=22.16. Use a standalone download or install Node 22/24 LTS.' 'AGY Token Tips 需要 Node.js >=22.16。请使用内置运行环境的安装包，或安装 Node 22/24 LTS。' >&2
+  printf '%s\n' 'tokens-tips requires Node.js >=22.16. Use a standalone download or install Node 22/24 LTS.' 'tokens-tips 需要 Node.js >=22.16。请使用内置运行环境的安装包，或安装 Node 22/24 LTS。' >&2
   exit 1
 fi
 if [ "$#" -eq 0 ]; then set -- start; fi

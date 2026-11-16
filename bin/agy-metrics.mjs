@@ -5,7 +5,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { parseOptions, resolvePaths, candidatePorts } from '../src/paths.mjs';
 import {widgetSource} from '../src/widget-source.mjs';
 
-const help = `AGY Token Tips 0.2.2 — Antigravity Desktop metrics
+const help = `tokens-tips 0.2.3 — Antigravity Desktop metrics
 
   node bin/agy-metrics.mjs start [options]
   node bin/agy-metrics.mjs doctor
@@ -88,7 +88,7 @@ async function main() {
   const reader=new MetricsReader(paths.dataDir,{contextLimit:options.contextLimit});
   const clients=new Map(),stop=new AbortController(); let warned=false,connected=false;
   const shutdown=()=>stop.abort(); process.once('SIGINT',shutdown);process.once('SIGTERM',shutdown);
-  console.log(en?'AGY Token Tips started; waiting for Antigravity. Ctrl+C stops the helper.':'AGY Token Tips 已启动；等待 Antigravity。Ctrl+C 停止并移除指标。');
+  console.log(en?'tokens-tips started; waiting for Antigravity. Ctrl+C stops the helper.':'tokens-tips 已启动；等待 Antigravity。Ctrl+C 停止并移除指标。');
   try{
     while(!stop.signal.aborted){
       const found=await endpoints(); const live=new Set();
@@ -124,7 +124,7 @@ async function main() {
   }finally{
     await Promise.allSettled([...clients.values()].map(c=>c.dispose()));
     process.removeListener('SIGINT',shutdown);process.removeListener('SIGTERM',shutdown);
-    console.log(en?'AGY Token Tips stopped; runtime metrics removed.':'AGY Token Tips 已停止，运行时指标已移除。');
+    console.log(en?'tokens-tips stopped; runtime metrics removed.':'tokens-tips 已停止，运行时指标已移除。');
   }
 }
-main().catch(error=>{console.error(`AGY Token Tips: ${error.message}`);process.exitCode=1;});
+main().catch(error=>{console.error(`tokens-tips: ${error.message}`);process.exitCode=1;});

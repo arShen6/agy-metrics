@@ -5,7 +5,7 @@ about: Report a display, data or installation problem / 报告显示、数据或
 
 **Antigravity version / 应用版本：**
 **OS and architecture / 系统与芯片：**
-**AGY Token Tips version / 插件版本：**
+**tokens-tips version / 插件版本：**
 **Language / 语言：**
 
 **Steps and expected behavior / 复现步骤和预期：**
