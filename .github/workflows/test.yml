@@ -1,10 +1,32 @@
 name: Test
 on:
   push:
+    branches: ['main']
   pull_request:
 permissions:
   contents: read
 jobs:
+  portable:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {runner: windows-2022, platform: win, binary: node.exe}
+          - {runner: ubuntu-24.04, platform: linux, binary: node}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.2'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm test
+      - run: node test/service-smoke.mjs
+      - run: python scripts/download_runtime.py --platform ${{ matrix.platform }} --arch x64
+      - shell: bash
+        run: python scripts/build_release.py --node "$PWD/.release-runtime/${{ matrix.binary }}" --node-license "$PWD/.release-runtime/LICENSE"
   unit:
     runs-on: ubuntu-24.04
     strategy:

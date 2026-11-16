@@ -4,11 +4,15 @@
 
 **See token usage, context fill, generation speed and first-token wait — right inside Antigravity Desktop.**
 
-[**Download for macOS · English**](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.4/agy-token-tips-0.2.4-macos-arm64-en.zip) · [**Chinese version**](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.4/agy-token-tips-0.2.4-macos-arm64-zh-CN.zip)
+**Download → unzip → run the installer.** No separate Node.js installation required.
 
-**Download → unzip → double-click `install.command`.** No commands to type, no separate runtime to install. Runs in the background after installation.
+| Platform | English tooltips | Chinese tooltips | Installer |
+| --- | --- | --- | --- |
+| macOS · Apple Silicon | [Download](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.5/agy-token-tips-0.2.5-macos-arm64-en.zip) | [Download](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.5/agy-token-tips-0.2.5-macos-arm64-zh-CN.zip) | Double-click `install.command` |
+| Windows · x64 (experimental) | [Download](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.5/agy-token-tips-0.2.5-windows-x64-en.zip) | [Download](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.5/agy-token-tips-0.2.5-windows-x64-zh-CN.zip) | Double-click `install.cmd` |
+| Linux · x64 (experimental) | [Download](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.5/agy-token-tips-0.2.5-linux-x64-en.zip) | [Download](https://github.com/arShen6/agy-token-tips/releases/download/v0.2.5/agy-token-tips-0.2.5-linux-x64-zh-CN.zip) | Run `install.sh` |
 
-For **macOS Apple Silicon (M series)** · Reference client: **Antigravity 2.32.1**
+Reference client: **Antigravity 2.32.1**. Windows/Linux have basic automated checks, **not live-client verification**. Please [report issues](https://github.com/arShen6/agy-token-tips/issues/new?template=bug_report.md).
 
 ![agy-token-tips showing speed, wait time, context usage and detailed statistics in Antigravity](assets/agy-preview.png)
 
@@ -29,22 +33,24 @@ A compact bar beside your composer. Hover for the details — no separate dashbo
 
 Context usage turns **yellow at 75%** and **red at 90%**. The strip stays in English; tooltips are available in English or Chinese. Data may update after a model call completes.
 
-## Install in 3 steps
+## Quick install
 
-1. **Download your language above.** Choose an installer ZIP, not GitHub's automatic “Source code” archive.
-2. **Extract the whole ZIP, then double-click `install.command`.**
-3. **Open an Antigravity conversation.** Once the service is registered, close Terminal. New conversations show data after their first model call.
+1. **Download your platform and language above.** Choose an installer ZIP, not GitHub's automatic “Source code” archive.
+2. **Extract the entire ZIP**, then run the installer listed above. On Linux, choose **Run as a Program** in your file manager; if unavailable, run `bash install.sh` from that folder.
+3. **Open an Antigravity conversation.** New conversations show data after their first model call.
 
-The runtime is included. Starts at login and reconnects when Antigravity reopens. Installation leaves active tasks running.
+For a first connection on Windows/Linux, save your work, quit Antigravity, then run **`start-antigravity.cmd` / `start-antigravity.sh`**. This opens Antigravity with local debugging enabled. Use that launcher again after a full app restart if the metrics disappear. The installer never closes active tasks.
 
-| Action | Double-click |
-| --- | --- |
-| English details | `install-en.command` |
-| Chinese details | `install-zh.command` |
-| Check status | `status.command` |
-| Uninstall | `uninstall.command` |
+The helper starts at login: LaunchAgent on macOS, a current-user scheduled task on Windows, or a user systemd service on Linux. **Linux needs a logged-in desktop session with systemd; Windows needs Task Scheduler and Windows PowerShell.** Install as your normal user.
 
-macOS may ask you to confirm opening the installer; it is not Apple-signed or notarized. Standalone downloads currently target M-series Macs.
+| Action | macOS | Windows | Linux |
+| --- | --- | --- | --- |
+| English details | `install-en.command` | `install-en.cmd` | `install-en.sh` |
+| Chinese details | `install-zh.command` | `install-zh.cmd` | `install-zh.sh` |
+| Check status | `status.command` | `status.cmd` | `status.sh` |
+| Uninstall | `uninstall.command` | `uninstall.cmd` | `uninstall.sh` |
+
+These community installers are unsigned. Your OS or file manager may ask you to confirm opening them. Windows ARM, Linux ARM and Intel Mac standalone packages are not included in this release.
 
 ## Understand the numbers
 
@@ -57,9 +63,9 @@ Counts come from local usage metadata. Unknown values stay `—`; tokens are not
 
 This is an unofficial local UI patch, not a VSIX extension. It reads local `gen_metadata` records and uses a loopback debugging connection to mount the strip. No API key or chat/metrics uploads. No application bundle modification.
 
-The installer keeps the existing `~/Library/Application Support/AGY Metrics` location and LaunchAgent identity for upgrade compatibility. It installs an independent copy, so the downloaded folder can be moved afterward. Uninstall removes login startup and the service; logs and backups remain, and Antigravity conversations are untouched.
+macOS retains `~/Library/Application Support/AGY Metrics` and its LaunchAgent identity for upgrade compatibility. Windows installs under `%LOCALAPPDATA%/agy-token-tips`; Linux uses `$XDG_DATA_HOME/agy-token-tips` (normally `~/.local/share/agy-token-tips`). It installs an independent copy, so the downloaded folder can be moved afterward. Uninstall removes login startup and the service; logs and backups remain, and Antigravity conversations are untouched.
 
-If metrics are missing, finish a model call and run `status.command`. `ready: true` means the widget was detected in an actual window. Logs are in `~/Library/Application Support/AGY Metrics/logs/`. Client updates may require adjustments to the private data format or UI hooks. Report your app/OS versions and redacted errors; do not upload conversation databases.
+If metrics are missing, finish a model call and run the status script for your platform. `ready: true` means the widget was detected in an actual window. Logs are in the installation directory’s `logs` folder. Linux service diagnostics: `journalctl --user -u agy-token-tips.service -n 50`. Client updates may require adjustments to the private data format or UI hooks. Report your app/OS versions and redacted errors; do not upload conversation databases.
 
 Source development requires Node.js >=22.16:
 
@@ -70,7 +76,7 @@ npm test
 npm run demo
 ```
 
-The demo uses simulated data. Windows/Linux have source-level path tests but no verified standalone installer or live UI support. More details: [protocol.md](docs/protocol.md).
+The demo uses simulated data. Windows/Linux packages are experimental: automated tests and native runtime/launcher checks do not establish live UI compatibility. More details: [protocol.md](docs/protocol.md).
 
 </details>
 

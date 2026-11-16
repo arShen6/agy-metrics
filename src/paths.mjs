@@ -1,6 +1,6 @@
 import os from 'node:os';
 import path from 'node:path';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 
 export function parseOptions(args) {
   const options = {command:'start',interval:1500,channel:'stable'};
@@ -8,7 +8,7 @@ export function parseOptions(args) {
   let commandSeen = false;
   for (let i=0; i<args.length; i++) {
     const arg=args[i];
-    if (['start','doctor','help'].includes(arg) && !commandSeen) { options.command=arg; commandSeen=true; continue; }
+    if (['start','launch','doctor','help'].includes(arg) && !commandSeen) { options.command=arg; commandSeen=true; continue; }
     if (arg==='--help' || arg==='-h') { options.command='help'; continue; }
     if (arg==='--launch') { options.launch=true; continue; }
     if (!arg.startsWith('--')) throw new Error(`Unexpected argument: ${arg}`);
@@ -28,6 +28,16 @@ export function parseOptions(args) {
   if (!['stable','insiders'].includes(options.channel)) throw new Error('Channel must be stable or insiders');
   if (options.language&&!['zh-CN','en'].includes(options.language)) throw new Error('Language must be zh-CN or en');
   return options;
+}
+
+export function appExecutable({platform=process.platform,env=process.env,exists=existsSync}={}) {
+  const candidates=platform==='win32'?[env.LOCALAPPDATA&&path.win32.join(env.LOCALAPPDATA,'Programs','Antigravity','Antigravity.exe'),
+    env.ProgramFiles&&path.win32.join(env.ProgramFiles,'Antigravity','Antigravity.exe')]:
+    [...(env.PATH||'').split(':').filter(Boolean).map(dir=>path.posix.join(dir,'antigravity')),
+      '/usr/share/antigravity/antigravity','/opt/Antigravity/antigravity','/opt/antigravity/antigravity'];
+  const executable=candidates.find(candidate=>candidate&&exists(candidate));
+  if(!executable)throw new Error('Antigravity was not found. Specify its executable with --app PATH.');
+  return executable;
 }
 
 export function resolvePaths({home=os.homedir(),platform=process.platform,env=process.env,channel='stable',dataDir,portFile}={}) {

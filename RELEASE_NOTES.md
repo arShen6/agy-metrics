@@ -1,11 +1,19 @@
-# agy-token-tips v0.2.4
+# agy-token-tips v0.2.5
 
-See token usage, context fill, generation speed and first-token wait inside Antigravity Desktop.
+Token usage, context fill, generation speed and first-token wait in Antigravity Desktop.
 
-**Download → unzip → double-click `install.command`.** Choose `en.zip` for English tooltips or `zh-CN.zip` for Chinese. The runtime is included.
+**Download your platform and language → unzip → run the installer.** Node.js is included.
 
-For macOS Apple Silicon (M series), with Antigravity 2.32.1 as the reference client. Runs in the background and starts at login.
+| Platform | Installer | Status |
+| --- | --- | --- |
+| macOS Apple Silicon | Double-click `install.command` | Existing integration |
+| Windows x64 | Double-click `install.cmd` | Experimental |
+| Linux x64 | Run `install.sh` | Experimental; systemd desktop session required |
 
-This release uses the project name **agy-token-tips** throughout the packages and interface. The default README is English; a separate Chinese README is linked at the top. Metrics calculations are unchanged.
+Choose `en.zip` for English tooltips or `zh-CN.zip` for Chinese. The main README is English, with a separate Chinese guide.
 
-The installer is not Apple-signed or notarized; macOS may request confirmation. This is an unofficial local UI patch; client updates may require compatibility fixes.
+Windows/Linux add login startup, status checks, uninstall, and an Antigravity launcher. For the first connection, save your work and quit Antigravity, then use `start-antigravity.cmd` or `start-antigravity.sh`. Installers do not close active tasks.
+
+Windows/Linux receive basic automated tests, native service-script syntax checks and bundled-runtime/launcher smoke tests; live Antigravity UI behavior is not verified on these platforms. Please report compatibility problems in [Issues](https://github.com/arShen6/agy-token-tips/issues/new?template=bug_report.md), including app/OS version, architecture and redacted errors. Do not attach conversation databases.
+
+Installers are unsigned. Reference client: Antigravity 2.32.1. Intel Mac and Windows/Linux ARM downloads are not included.

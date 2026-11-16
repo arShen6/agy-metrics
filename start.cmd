@@ -1,4 +1,3 @@
 @echo off
-cd /d "%~dp0"
-node bin\agy-metrics.mjs start %*
+call "%~dp0run.cmd" start %*
 if errorlevel 1 pause

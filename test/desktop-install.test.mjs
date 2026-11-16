@@ -123,7 +123,7 @@ test('selected language and bundled runtime survive deletion of the downloaded p
   const plist=readFileSync(result.plistPath,'utf8');
   assert.match(plist,/<string>--language<\/string><string>en<\/string>/);
   assert.equal(readFileSync(path.join(result.releaseDir,'runtime','node'),'utf8'),'fixture runtime');
-  assert.equal(!!(statSync(path.join(result.releaseDir,'runtime','node')).mode&0o111),true);
+  if(process.platform!=='win32') assert.equal(!!(statSync(path.join(result.releaseDir,'runtime','node')).mode&0o111),true);
   assert.doesNotMatch(plist,/\/opt\/Node/);
 });
 

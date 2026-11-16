@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
+import {portablePaths,serviceBackend} from './platform-services.mjs';
 
 const LABEL='io.github.arShen6.agy-metrics';
 const OWNER='AGY Metrics desktop installation v1\n';
@@ -56,7 +57,7 @@ function atomicWrite(file,contents) {
   finally {rmSync(temporary,{force:true});}
 }
 
-function copyRuntime(source,destination) {
+function copyRuntime(source,destination,platform='darwin') {
   const copy=(from,to)=>{
     const stat=lstatSync(from);
     if(stat.isSymbolicLink()) throw new Error('安装源包含符号链接，请使用完整源码目录。');
@@ -73,12 +74,13 @@ function copyRuntime(source,destination) {
   const runtime=path.join(source,'runtime');
   if(existsSync(runtime)) {
     mkdirSync(path.join(destination,'runtime'));
-    for(const name of ['node','LICENSE']) {
+    const binary=platform==='win32'?'node.exe':'node';
+    for(const name of [binary,'LICENSE']) {
       const file=path.join(runtime,name);
       if(!lstatSync(file).isFile()) throw new Error('Invalid bundled runtime');
       copyFileSync(file,path.join(destination,'runtime',name));
     }
-    chmodSync(path.join(destination,'runtime','node'),0o755);
+    chmodSync(path.join(destination,'runtime',binary),0o755);
   }
 }
 
@@ -153,5 +155,62 @@ export function uninstallDesktop({home=os.homedir(),uid=process.getuid?.(),run=l
   if(queryService(run,target).loaded) throw new Error('后台服务仍在运行，卸载未完成。');
   rmSync(p.plistPath,{force:true});
   // Keep version backups/logs. Never remove Antigravity data or settings.
+  return {removed:true,retainedDirectory:p.root};
+}
+
+function portableContext(options={}) {
+  const platform=options.platform||process.platform;
+  if(!['linux','win32'].includes(platform))throw new Error('Unsupported installer platform');
+  const p=portablePaths({...options,platform});
+  if(existsSync(p.root)&&(lstatSync(p.root).isSymbolicLink()||!existsSync(p.marker)||readFileSync(p.marker,'utf8')!==OWNER))
+    throw new Error('Installation directory ownership is unknown; no files were changed.');
+  for(const file of [p.config,p.servicePath].filter(Boolean))if(existsSync(file)&&lstatSync(file).isSymbolicLink())
+    throw new Error('Installation file ownership is unknown (symbolic link).');
+  return {p,platform,backend:options.backend||serviceBackend(p,platform)};
+}
+
+export function portableStatus(options={}) {
+  const {p,backend}=portableContext(options);
+  return {...p,...backend.status()};
+}
+
+export function installPortable(options={}) {
+  const language=options.language||'zh-CN';
+  if(!['zh-CN','en'].includes(language))throw new Error('Language must be zh-CN or en');
+  const {p,platform,backend}=portableContext(options),before=backend.status();
+  if(before.loaded&&!before.owned)throw new Error('Existing service is not owned by this installation.');
+  const previous=existsSync(p.config)?JSON.parse(readFileSync(p.config,'utf8')):null;
+  if(before.loaded&&!previous)throw new Error('Existing service ownership cannot be confirmed.');
+  mkdirSync(p.root,{recursive:true,mode:0o700});writeFileSync(p.marker,OWNER,{mode:0o600});
+  const releaseDir=path.join(p.root,'versions',randomUUID());
+  copyRuntime(options.sourceRoot,releaseDir,platform);
+  const binary=path.join(releaseDir,'runtime',platform==='win32'?'node.exe':'node');
+  const logs=path.join(p.root,'logs');mkdirSync(logs,{recursive:true,mode:0o700});
+  const config={releaseDir,node:existsSync(binary)?binary:(options.nodePath||process.execPath),
+    script:path.join(releaseDir,'bin','agy-metrics.mjs'),log:path.join(logs,'metrics.log'),language};
+  backend.validate?.(config);
+  try {
+    if(before.loaded)backend.stop();
+    backend.apply(config);atomicWrite(p.config,JSON.stringify(config));backend.start();
+    const state=backend.status();
+    if(!state.loaded||!state.running)throw new Error('Background service failed to start running.');
+    return {...p,...state,releaseDir};
+  }catch(error){
+    try {
+      const current=backend.status();
+      if(current.loaded&&!current.owned)throw new Error('Service ownership changed; rollback stopped.');
+      if(current.loaded)backend.stop();
+      if(previous){backend.apply(previous);atomicWrite(p.config,JSON.stringify(previous));if(before.running)backend.start();}
+      else {backend.remove();rmSync(p.config,{force:true});}
+    }catch(rollback){error.message+=` Rollback failed: ${rollback.message}`;}
+    throw error;
+  }
+}
+
+export function uninstallPortable(options={}) {
+  const {p,backend}=portableContext(options),state=backend.status();
+  if(state.loaded&&(!state.owned||!existsSync(p.marker)))throw new Error('Existing service is not owned by this installation.');
+  if(state.loaded)backend.stop();
+  backend.remove();rmSync(p.config,{force:true});
   return {removed:true,retainedDirectory:p.root};
 }

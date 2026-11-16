@@ -2,13 +2,14 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
-import { parseOptions, resolvePaths, candidatePorts } from '../src/paths.mjs';
+import { parseOptions, resolvePaths, candidatePorts, appExecutable } from '../src/paths.mjs';
 import {widgetSource} from '../src/widget-source.mjs';
 
-const help = `agy-token-tips 0.2.4 — Antigravity Desktop metrics
+const help = `agy-token-tips 0.2.5 — Antigravity Desktop metrics
 
   node bin/agy-metrics.mjs start [options]
   node bin/agy-metrics.mjs doctor
+  node bin/agy-metrics.mjs launch [--app PATH]
 
   --channel stable|insiders  默认 stable
   --port 9222               指定本地 CDP 端口，否则自动发现
@@ -71,18 +72,21 @@ async function main() {
       windows,ready:windows.some(w=>w.visible)},null,2));
     return;
   }
-  if(options.launch && !(await endpoints()).some(r=>r.targets.length)){
+  if((options.launch||options.command==='launch') && !(await endpoints()).some(r=>r.targets.length)){
     const debugArgs=[`--remote-debugging-port=${options.port||paths.fallbackPort}`,'--remote-debugging-address=127.0.0.1'];
     let command,args;
     if(process.platform==='darwin'){command='/usr/bin/open';args=['-a',options.app||paths.appName,'--args',...debugArgs];}
-    else if(options.app){command=options.app;args=debugArgs;}
-    else throw new Error('此平台请手动启动 Antigravity，或通过 --app 指定应用程序路径。');
+    else {command=options.app||appExecutable();args=debugArgs;}
     await new Promise((resolve,reject)=>{
       const child=spawn(command,args,{stdio:'ignore',detached:process.platform!=='darwin'});
       child.once('error',reject);
       if(process.platform==='darwin') child.once('exit',code=>code===0?resolve():reject(new Error('无法启动 Antigravity')));
       else child.once('spawn',()=>{child.unref();resolve();});
     });
+  }
+  if(options.command==='launch') {
+    console.log(en?'Launch requested. If Antigravity was already open without debugging, save your work, quit it, and run this launcher again.':'已请求启动。若 Antigravity 已打开但没有显示指标，请先保存工作并退出应用，再运行此启动器。');
+    return;
   }
   const source=widgetSource(language);
   const reader=new MetricsReader(paths.dataDir,{contextLimit:options.contextLimit});
