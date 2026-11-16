@@ -1,0 +1,46 @@
+{
+  "name": "agy-token-tips",
+  "version": "0.2.2",
+  "description": "Bilingual token, speed and context tips inside Antigravity Desktop",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "bin": {
+    "agy-token-tips": "bin/agy-metrics.mjs"
+  },
+  "scripts": {
+    "start": "node bin/agy-metrics.mjs start",
+    "doctor": "node bin/agy-metrics.mjs doctor",
+    "test": "node --test test/*.test.mjs",
+    "demo": "node demo/server.mjs",
+    "release:build": "python3 scripts/build_release.py"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "ui/",
+    "demo/",
+    "docs/",
+    "start.command",
+    "start.sh",
+    "start.cmd",
+    "install.command",
+    "install-en.command",
+    "uninstall.command",
+    "status.command",
+    "README.md",
+    "README.en.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "assets/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arShen6/agy-metrics.git"
+  },
+  "tokenTips": {
+    "language": "zh-CN"
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+*.tgz
+*.zip
+dist/
+*.log
+*.db
+*.db-*
+.DS_Store
+__pycache__/
+.venv/
+test-results/
+.superpowers/
+/.release-runtime/
