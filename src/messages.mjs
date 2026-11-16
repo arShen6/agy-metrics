@@ -13,7 +13,7 @@ export function formatTooltip(payload,language='zh-CN',rate=formatRate) {
   const {latest:x,context:c,total:t}=payload;
   const hasTiming=[x.waitSeconds,x.streamSeconds,x.totalSeconds].some(Number.isFinite);
   if(en) return [
-    'tokens-tips · Latest model call',
+    'agy-token-tips · Latest model call',
     `Status bar speed: ${rate(x.speed)} tok/s`,
     `Speed basis: ${x.mode==='stream'?'streaming output (excludes waiting)':x.mode==='end-to-end'?'end-to-end (includes waiting; possibly buffered)':'timing unavailable'}`,
     `End-to-end speed: ${rate(x.endToEndSpeed)} tok/s (includes waiting)`,
@@ -26,7 +26,7 @@ export function formatTooltip(payload,language='zh-CN',rate=formatRate) {
     'Based on local metadata; values may update after a model call completes.'
   ].filter(Boolean).join('\n');
   return [
-    'tokens-tips · 最近一次模型调用',
+    'agy-token-tips · 最近一次模型调用',
     `底部速度：${rate(x.speed)} tok/s`,
     `速度口径：${x.mode==='stream'?'流式输出（不含等待）':x.mode==='end-to-end'?'端到端（含等待，可能为缓冲返回）':'计时未知'}`,
     `端到端速度：${rate(x.endToEndSpeed)} tok/s（含等待）`,

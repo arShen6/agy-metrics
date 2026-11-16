@@ -13,19 +13,19 @@ try {
   if(command==='install') {
     // This only registers the metrics helper. It neither launches nor restarts Desktop.
     const state=installDesktop({sourceRoot:fileURLToPath(new URL('..',import.meta.url)),language});
-    console.log(en?'tokens-tips background service registered. You can close this Terminal window.':'tokens-tips 后台服务已注册，现在可以关闭这个终端窗口。');
+    console.log(en?'agy-token-tips background service registered. You can close this Terminal window.':'agy-token-tips 后台服务已注册，现在可以关闭这个终端窗口。');
     console.log(en?'Open an existing conversation in Antigravity Desktop to see the metrics.':'打开 Antigravity Desktop 的已有对话，在输入框底部查看指标。');
     console.log(en?'The helper starts automatically when you sign in.':'以后登录自动运行，无需再次启动脚本。');
     console.log(`${en?'Logs':'运行日志'}: ${state.root}/logs/metrics.log`);
     console.log(en?'If metrics are missing, double-click status.command.':'若没有出现指标，双击 status.command 检查连接。');
   } else if(command==='uninstall') {
     uninstallDesktop();
-    console.log(en?'tokens-tips background service and login startup removed.':'tokens-tips 后台服务及登录启动已移除。');
+    console.log(en?'agy-token-tips background service and login startup removed.':'agy-token-tips 后台服务及登录启动已移除。');
     console.log(en?'Conversation data is unchanged; version backups and logs are retained.':'会话数据保持原样；源码备份和日志予以保留。');
   } else if(command==='status') {
     const state=desktopStatus();
     console.log(en?`Background service: ${state.running?'running':state.loaded?'registered, starting':'not running'}`:`后台服务：${state.running?'运行中':state.loaded?'已注册，正在启动':'未运行'}`);
   } else throw new Error('未知命令。请使用 install、uninstall 或 status。');
 } catch(error) {
-  console.error(`tokens-tips: ${error.message}`);process.exitCode=1;
+  console.error(`agy-token-tips: ${error.message}`);process.exitCode=1;
 }

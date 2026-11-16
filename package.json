@@ -1,14 +1,14 @@
 {
-  "name": "tokens-tips",
-  "version": "0.2.3",
-  "description": "See token usage, context fill and generation speed inside Antigravity. 查看 token 用量、上下文占用与生成速度。",
+  "name": "agy-token-tips",
+  "version": "0.2.4",
+  "description": "Token usage, context fill, generation speed and first-token wait inside Antigravity Desktop",
   "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=22.16.0"
   },
   "bin": {
-    "tokens-tips": "bin/agy-metrics.mjs"
+    "agy-token-tips": "bin/agy-metrics.mjs"
   },
   "scripts": {
     "start": "node bin/agy-metrics.mjs start",
@@ -35,11 +35,12 @@
     "README.en.md",
     "CONTRIBUTING.md",
     "LICENSE",
-    "assets/"
+    "assets/",
+    "README.zh-CN.md"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/arShen6/agy-metrics.git"
+    "url": "https://github.com/arShen6/agy-token-tips.git"
   },
   "tokenTips": {
     "language": "zh-CN"

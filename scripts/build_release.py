@@ -15,7 +15,7 @@ FILES = ['bin/agy-metrics.mjs', 'bin/desktop.mjs', 'src/cdp.mjs', 'src/database.
          'src/desktop-install.mjs', 'src/metrics.mjs', 'src/paths.mjs', 'src/messages.mjs',
          'src/widget-source.mjs', 'ui/widget.js', 'start.sh', 'start.command', 'install.command',
          'install-en.command', 'install-zh.command', 'uninstall.command', 'status.command',
-         'README.md', 'README.en.md', 'CONTRIBUTING.md', 'docs/protocol.md',
+         'README.md', 'README.en.md', 'README.zh-CN.md', 'CONTRIBUTING.md', 'docs/protocol.md',
          'assets/agy-preview.png', 'LICENSE']
 EXECUTABLES = ['start.sh', 'start.command', 'install.command', 'install-en.command', 'install-zh.command',
                'uninstall.command', 'status.command', 'runtime/node']
@@ -37,7 +37,7 @@ def main():
     dist.mkdir(exist_ok=True)
     sums = []
     for language in ['zh-CN', 'en']:
-        name = f"tokens-tips-{metadata['version']}-macos-arm64-{language}"
+        name = f"agy-token-tips-{metadata['version']}-macos-arm64-{language}"
         with tempfile.TemporaryDirectory(prefix='build-', dir=dist) as temp:
             folder = Path(temp) / name
             for relative in FILES:
